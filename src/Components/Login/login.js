@@ -12,6 +12,7 @@ const PouchDB = require('pouchdb-browser');
 const pouchDB = PouchDB.default.defaults();
 const db = new pouchDB('Users');
 
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -19,13 +20,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(5),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -40,14 +37,20 @@ export default function Login() {
     const classes = useStyles();
     
     const show = () => {
-     db.allDocs({include_docs: true})
-     .then(function (response) {
-            console.log(response);
-          }).catch(function (err) {
-            console.log(err);})
+        db.allDocs({include_docs: true})
+            .then(function (response) {
+                    console.log(response);
+                }).catch(function (err) {
+                    console.log(err);
+                })
     }
     return (
         <Grid>
+            <Button
+                onClick={()=>show()}
+            >
+                dasd
+            </Button>
             { login ?
             <Container component="main" maxWidth="xs">
                 <CssBaseline />

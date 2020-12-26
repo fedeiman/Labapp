@@ -33,28 +33,31 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Register (props) {
     const [showpass,setPass] = useState(false)
-    const [name,setName] = useState('')
-    const [surName,setSurName] = useState('')
-    const [email,setEmail] = useState('')
-    const [password,setPassword] = useState('')
+    const [unComplete,setUnCom] = useState(false)
+    const [name,setName] = useState("")
+    const [error,setError] = useState(false)
+    const [surName,setSurName] = useState("")
+    const [email,setEmail] = useState("")
+    const [password,setPassword] = useState("")
     const classes = useStyles();
     
     const saveUser = () => {
-        if(name !== ''){
-            try {
+            if(name !== "" && surName !== "" && email !== "" && password !== ""){
                 db.put({
                     _id:email,
                     name:name,
                     surName:surName,
                     password:password
-                })
-                
-            } catch (error) {
-                console.log(error)
+                }).then(function (){
+                    props.showLogin(true)
+                }).catch(function (err) {
+                    setError(true)
+                  });          
             }
+        else{
+            setUnCom(true)
         }
-        }
-
+    }
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -89,6 +92,8 @@ export default function Register (props) {
                         <TextField
                         variant="outlined"
                         margin="normal"
+                        error={error}
+                        helperText={error && "E-mail invalido"}
                         required
                         fullWidth
                         id="email"
@@ -122,12 +127,11 @@ export default function Register (props) {
                         }}
                     />
                     <Button
-                        type="submit"
+                        onClick={()=>saveUser()}
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
-                        onClick={()=>saveUser()}
                     >
                         Crear Usuario
                     </Button>
@@ -140,6 +144,13 @@ export default function Register (props) {
                         </Button>
                     </Grid>
                 </form>
+                <Grid>
+                {((name === "" || surName === ""|| email === "" || password === "") && unComplete) &&
+                <Typography style={{color:'red'}}>
+                    Completa todos los datos * 
+                </Typography>
+                }
+                </Grid>
             </div>
         </Container>
     );
