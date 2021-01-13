@@ -44,6 +44,14 @@ export default function Login() {
                     console.log(err);
                 })
     }
+    const auth = () => {
+        db.get(email)
+            .then(function (doc) {
+                console.log(doc);
+            }).catch(function (err) {
+                console.log(err);
+            })
+    }
     return (
         <Grid>
             <Button
@@ -97,10 +105,10 @@ export default function Login() {
                             }}
                         />
                         <Button
-                            type="submit"
                             fullWidth
                             variant="contained"
                             color="primary"
+                            onClick={auth}
                             className={classes.submit}
                         >
                             Entrar
