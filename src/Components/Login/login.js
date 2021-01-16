@@ -8,9 +8,12 @@ import { makeStyles } from '@material-ui/core/styles';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Container from '@material-ui/core/Container';
 import Register from './register';
+import "./Login.scss"
+import PatientForm from '../../Components/Forms/patientForm'
 const PouchDB = require('pouchdb-browser');
 const pouchDB = PouchDB.default.defaults();
 const db = new pouchDB('Users');
+var passwordHash = require('password-hash');
 
 
 const useStyles = makeStyles((theme) => ({
@@ -34,6 +37,7 @@ export default function Login() {
     const [email,setEmail] = useState('')
     const [password,setPassword] = useState('')
     const [login, showLogin] = useState(true)
+    const [badLogin,setBadLogin] = useState(false)
     const classes = useStyles();
     
     const show = () => {
@@ -47,25 +51,43 @@ export default function Login() {
     const auth = () => {
         db.get(email)
             .then(function (doc) {
-                console.log(doc);
+                if(passwordHash.verify(password,doc.password)){
+                    console.log('te logueaste');
+                    setBadLogin(false)
+                }
+                else{
+                    console.log('no te logueaste')
+                    setBadLogin(true)
+                    setEmail('')
+                    setPassword('')
+                }
             }).catch(function (err) {
-                console.log(err);
+                setEmail('')
+                setPassword('')
+                setBadLogin(true)
             })
     }
     return (
         <Grid>
             <Button
-                onClick={()=>show()}
+                onClick={show}
             >
-                dasd
+                mostrar
             </Button>
+            <PatientForm></PatientForm>
             { login ?
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <div className={classes.paper}>
-                    <Typography component="h1" variant="h5">
-                        Login
-                    </Typography>
+                    {badLogin ?
+                        <Typography component="h1" variant="h5" id="errorLogin">
+                            Email o contraseña incorrecta
+                        </Typography>
+                    :
+                        <Typography component="h1" variant="h5">
+                            Login
+                        </Typography>
+                    } 
                     <form className={classes.form}>
                         <TextField
                             variant="outlined"
