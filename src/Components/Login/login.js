@@ -9,7 +9,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import Container from '@material-ui/core/Container';
 import Register from './register';
 import "./Login.scss"
-import PatientForm from '../../Components/Forms/patientForm'
+import MainLayout from '../../Components/Forms/mainLayout'
 const PouchDB = require('pouchdb-browser');
 const pouchDB = PouchDB.default.defaults();
 const db = new pouchDB('Users');
@@ -38,6 +38,7 @@ export default function Login() {
     const [password,setPassword] = useState('')
     const [login, showLogin] = useState(true)
     const [badLogin,setBadLogin] = useState(false)
+    const [logued, setLogued] = useState(false)
     const classes = useStyles();
     
     const show = () => {
@@ -54,10 +55,12 @@ export default function Login() {
                 if(passwordHash.verify(password,doc.password)){
                     console.log('te logueaste');
                     setBadLogin(false)
+                    setLogued(true)
                 }
                 else{
                     console.log('no te logueaste')
                     setBadLogin(true)
+                    setLogued(false)
                     setEmail('')
                     setPassword('')
                 }
@@ -65,96 +68,104 @@ export default function Login() {
                 setEmail('')
                 setPassword('')
                 setBadLogin(true)
+                setLogued(false)
             })
     }
     return (
         <Grid>
+            {!logued ?
+                <Grid>
             <Button
                 onClick={show}
             >
                 mostrar
             </Button>
-            <PatientForm></PatientForm>
-            { login ?
-            <Container component="main" maxWidth="xs">
-                <CssBaseline />
-                <div className={classes.paper}>
-                    {badLogin ?
-                        <Typography component="h1" variant="h5" id="errorLogin">
-                            Email o contraseña incorrecta
-                        </Typography>
-                    :
-                        <Typography component="h1" variant="h5">
-                            Login
-                        </Typography>
-                    } 
-                    <form className={classes.form}>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            value={email}
-                            onChange={({ target: { value }}) => {setEmail(value)}}
-                            autoComplete="email"
-                            autoFocus
-                        />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            type={showpass ? "text" : "password"}
-                            name="password"
-                            label="Password"
-                            id="password"
-                            value={password}
-                            onChange={({ target: { value }}) => {setPassword(value)}}
-                            className="formInput"
-                            InputProps={{
-                                endAdornment: (
-                                    <Button
-                                        onClick={()=>setPass(!showpass)}
-                                        position="end"
-                                        color="primary"
-                                    >
-                                        { showpass ? <FaEye /> : <FaEyeSlash /> }
-                                    </Button>
-                                )
-                            }}
-                        />
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            onClick={auth}
-                            className={classes.submit}
-                        >
-                            Entrar
-                        </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Button>
-                                    Forgot password?
-                                </Button>
-                            </Grid>
-                            <Grid item>
+                    { login ?
+                    <Container component="main" maxWidth="xs">
+                        <CssBaseline />
+                        <div className={classes.paper}>
+                            {badLogin ?
+                                <Typography component="h1" variant="h5" id="errorLogin">
+                                    Email o contraseña incorrecta
+                                </Typography>
+                            :
+                                <Typography component="h1" variant="h5">
+                                    Login
+                                </Typography>
+                            } 
+                            <form className={classes.form}>
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="email"
+                                    label="Email Address"
+                                    name="email"
+                                    value={email}
+                                    onChange={({ target: { value }}) => {setEmail(value)}}
+                                    autoComplete="email"
+                                    autoFocus
+                                />
+                                <TextField
+                                    variant="outlined"
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    type={showpass ? "text" : "password"}
+                                    name="password"
+                                    label="Password"
+                                    id="password"
+                                    value={password}
+                                    onChange={({ target: { value }}) => {setPassword(value)}}
+                                    className="formInput"
+                                    InputProps={{
+                                        endAdornment: (
+                                            <Button
+                                                onClick={()=>setPass(!showpass)}
+                                                position="end"
+                                                color="primary"
+                                            >
+                                                { showpass ? <FaEye /> : <FaEyeSlash /> }
+                                            </Button>
+                                        )
+                                    }}
+                                />
                                 <Button
-                                    onClick={()=>showLogin(false)}
-                                >                                    
-                                    Registrate
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={auth}
+                                    className={classes.submit}
+                                >
+                                    Entrar
                                 </Button>
-                            </Grid>
-                        </Grid>
-                    </form>
-                </div>
-            </Container>
-        :
-            <Register showLogin={showLogin}/>
-        }
+                                <Grid container>
+                                    <Grid item xs>
+                                        <Button>
+                                            Forgot password?
+                                        </Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            onClick={()=>showLogin(false)}
+                                        >                                    
+                                            Registrate
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </form>
+                        </div>
+                    </Container>
+                :
+                    <Register showLogin={showLogin}/>
+                }
+                </Grid>
+            :
+                <Grid>
+                    <MainLayout setLogued={setLogued}/>
+                </Grid>
+            }
         </Grid>
     );
 }
